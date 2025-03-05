@@ -12,13 +12,8 @@ class PromotionController extends Controller
 
     public function index()
     {
-        // $func = "promotion"
-        $func = "admin_view";
-        $data['breadcrumb'] = '
-        <li class="breadcrumb-item"><a href="#">/</a></li>
-        <li class="breadcrumb-item active" aria-current="page"> Bảng điều khiển</li>';
-        $data['active_menu'] = 'dashboard';
-        return view('promotion.index');
+        $promotions = Promotion::orderBy('created_at', 'desc')->paginate(10);
+        return view('promotion.index', compact('promotions'));
     }
 
     public function create()
@@ -32,35 +27,75 @@ class PromotionController extends Controller
     }
     public function store(Request $request)
     {
-
-        dd($request->all());
-        // $user  = auth()->user();
-        // if (!$user) {
-        //     return redirect()->route('front.login');
-        // }
-
-        // Xác thực dữ liệu
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'string|required',
             'start_at' => 'nullable|date|after_or_equal:today',
             'end_at' => 'nullable|date|after:start_at',
-            'tag_ids' => 'nullable|array',
+            'tag_titles' => 'nullable|array',
             'status' => 'required|in:active,inactive',
-        ]); 
-        $tag_ids = null;
-    
-        if($request->has('tag_ids')){
-            $tag_ids = (new TagsController())->store($request['tag_ids']);
+        ]);
+
+        $tag_id = null;
+        if ($request->has('tag_titles')) {
+            $tag_id = app(TagsController::class)->store($request['tag_titles']);
         }
+
         Promotion::create([
             'title' => $request->title,
             'content' => $request->content,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
-            'tag_ids' => $tag_ids,
+            'tag_ids' => $tag_id,
             'status' => $request->status,
         ]);
-        return redirect()->route('promotion.create')->with('success', 'Khuyến mãi đã được thêm thành công!');
+
+        return redirect()->route('admin.promotion.index')->with('success', 'Khuyến mãi đã được thêm thành công!');
+    }
+
+    public function edit($id)
+    {
+        $promotion = Promotion::findOrFail($id);
+        $tags = Tags::all();
+
+        return view('promotion.edit', compact('promotion', 'tags'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'string|required',
+            'start_at' => 'nullable|date|after_or_equal:today',
+            'end_at' => 'nullable|date|after:start_at',
+            'tag_titles' => 'nullable|array',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $promotion = Promotion::findOrFail($id);
+
+        $tag_id = null;
+        if ($request->has('tag_titles')) {
+            $tag_id = app(TagsController::class)->store($request['tag_titles']);
+        }
+
+        $promotion->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'start_at' => $request->start_at,
+            'end_at' => $request->end_at,
+            'tag_ids' => $tag_id,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('admin.promotion.index')->with('success', 'Khuyến mãi đã được cập nhật thành công!');
+    }
+
+    public function destroy($id)
+    {
+        $promotion = Promotion::findOrFail($id);
+        $promotion->delete();
+
+        return redirect()->route('admin.promotion.index')->with('success', 'Khuyến mãi đã được xóa thành công!');
     }
 }

@@ -48,28 +48,22 @@ class TagsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store($tag_ids)
+    public function store($tag_titles)
     {
-        //
-        $func = "tag_add";
-        $tags = "";
-        // return $request->all();
-        if ($tag_ids || count($tag_ids)==0){
-            return;
+        if (!$tag_titles || count($tag_titles) == 0) {
+            return null;
         }
-        foreach($tag_ids as $tag_id){
-            $tag = Tags::find($tag_id);
-            if(!$tag){
-                $newTag = Tags::create($tag_id);
-                $tags = $tags.";".$newTag->id;
-                $tag = Tags::find($newTag->id);
-            }else{
-                $tags = $tags.";".$tag_id;
-            }
-            $tag->hit +=1;
+
+        $tags = [];
+        foreach ($tag_titles as $tag_title) {
+            $tag = Tags::firstOrCreate(['title' => $tag_title], ['hit' => 0]);
+            $tag->increment('hit');
+            $tags[] = $tag->id;
         }
-        return $tags;
+        
+        return implode(';', $tags); // Trả về danh sách ID tags dạng chuỗi
     }
+
 
     /**
      * Display the specified resource.

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->longText('content');
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
-            $table->text('tag_ids');
+            $table->text('tag_ids')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
