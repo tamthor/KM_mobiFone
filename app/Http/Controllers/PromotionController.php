@@ -32,7 +32,8 @@ class PromotionController extends Controller
     }
     public function store(Request $request)
     {
-        dd(request()->all());
+
+        dd($request->all());
         // $user  = auth()->user();
         // if (!$user) {
         //     return redirect()->route('front.login');
@@ -41,9 +42,9 @@ class PromotionController extends Controller
         // Xác thực dữ liệu
         $request->validate([
             'title' => 'required|max:255',
-            'content' => 'required',
-            'start_at' => 'required|date|after_or_equal:today',
-            'end_at' => 'required|date|after:start_at',
+            'content' => 'string|required',
+            'start_at' => 'nullable|date|after_or_equal:today',
+            'end_at' => 'nullable|date|after:start_at',
             'tag_ids' => 'nullable|array',
             'status' => 'required|in:active,inactive',
         ]); 
@@ -60,6 +61,6 @@ class PromotionController extends Controller
             'tag_ids' => $tag_ids,
             'status' => $request->status,
         ]);
-        return redirect()->route('promotion.index')->with('success', 'Khuyến mãi đã được thêm thành công!');
+        return redirect()->route('promotion.create')->with('success', 'Khuyến mãi đã được thêm thành công!');
     }
 }
