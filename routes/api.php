@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\PromotionContactController;
+use App\Http\Controllers\Api\PromotionController; // Cập nhật namespace
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +21,15 @@ Route::get('/ping', function () {
     return response()->json(['message' => 'API is working'], 200);
 });
 
-// Nhóm route dành cho user API
-Route::prefix('users')->group(function () {
-    
+
+Route::prefix('promotions')->group(function () {
+    Route::get('/', [PromotionController::class, 'index']);
+    Route::get('/{id}', [PromotionController::class, 'show']);
+    Route::post('/', [PromotionController::class, 'store']);
+    Route::put('/{id}', [PromotionController::class, 'update']);
+    Route::delete('/{id}', [PromotionController::class, 'destroy']);
 });
+
 Route::post('/promotion_contact', [PromotionContactController::class, 'store'])->name('promotion.contact');
 
 // Nếu cần thêm API khác, bạn có thể tiếp tục viết ở đây
