@@ -2,7 +2,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Promotion;
+use App\Models\PromotionContent;
 use Illuminate\Support\Carbon;
 
 class UpdatePromotionStatus extends Command
@@ -12,7 +12,7 @@ class UpdatePromotionStatus extends Command
 
     public function handle()
     {
-        $expiredPromotions = Promotion::where('end_at', '<', Carbon::now())->where('status', 'active')->get();
+        $expiredPromotions = PromotionContent::where('end_at', '<', Carbon::now())->where('status', 'active')->get();
 
         foreach ($expiredPromotions as $promotion) {
             $promotion->update(['status' => 'inactive']);

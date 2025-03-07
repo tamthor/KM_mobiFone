@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Promotion;
 use App\Models\PromotionContent;
 use App\Models\Tags;
 use Illuminate\Http\Request;
 
-class PromotionController extends Controller
+class PromotionContentController extends Controller
 {
 
     public function index()
     {
-        $promotions = Promotion::orderBy('created_at', 'desc')->paginate(10);
+        $promotions = PromotionContent::orderBy('created_at', 'desc')->paginate(10);
         return view('promotion.index', compact('promotions'));
     }
 
@@ -41,7 +40,7 @@ class PromotionController extends Controller
             $tag_id = app(TagsController::class)->store($request['tag_titles']);
         }
 
-        Promotion::create([
+        PromotionContent::create([
             'title' => $request->title,
             'content' => $request->content,
             'start_at' => $request->start_at,
@@ -55,7 +54,7 @@ class PromotionController extends Controller
 
     public function edit($id)
     {
-        $promotion = Promotion::findOrFail($id);
+        $promotion = PromotionContent::findOrFail($id);
         $tags = Tags::all();
 
         return view('promotion.edit', compact('promotion', 'tags'));
@@ -72,7 +71,7 @@ class PromotionController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
-        $promotion = Promotion::findOrFail($id);
+        $promotion = PromotionContent::findOrFail($id);
 
         $tag_id = null;
         if ($request->has('tag_titles')) {
@@ -93,7 +92,7 @@ class PromotionController extends Controller
 
     public function destroy($id)
     {
-        $promotion = Promotion::findOrFail($id);
+        $promotion = PromotionContent::findOrFail($id);
         $promotion->delete();
 
         return redirect()->route('admin.promotion.index')->with('success', 'Khuyến mãi đã được xóa thành công!');
