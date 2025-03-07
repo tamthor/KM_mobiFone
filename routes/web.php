@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\PromotionContactController;
 use App\Http\Controllers\PromotionContentController;
 
 // Route::get('/', function () {
@@ -14,3 +15,4 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
     Route::post('upload-ckeditor', [FilesController::class, 'ckeditorUpload'])->name('upload.ckeditor');
 
 });
+

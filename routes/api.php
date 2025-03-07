@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\PromotionContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +25,6 @@ Route::get('/ping', function () {
 Route::prefix('users')->group(function () {
     
 });
+Route::post('/promotion_contact', [PromotionContactController::class, 'store'])->name('promotion.contact');
 
 // Nếu cần thêm API khác, bạn có thể tiếp tục viết ở đây
