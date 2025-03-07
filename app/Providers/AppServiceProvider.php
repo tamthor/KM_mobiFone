@@ -20,5 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        \Illuminate\Support\Facades\Route::middleware('api')
+            ->prefix('api')
+            ->group(base_path('routes/api.php'));
     }
 }
