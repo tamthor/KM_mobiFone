@@ -24,6 +24,7 @@
                 <thead>
                     <tr>
                         <th class="whitespace-nowrap">TITLE</th>
+                        <th class="text-center whitespace-nowrap">VIEWS</th>
                         <th class="text-center whitespace-nowrap">START DATE</th>
                         <th class="text-center whitespace-nowrap">END DATE</th>
                         <th class="text-center whitespace-nowrap">STATUS</th>
@@ -35,6 +36,9 @@
                     <tr class="intro-x"> 
                         <td>
                             <a href="{{ route('admin.promotion.edit', $promotion->id) }}" class="font-medium whitespace-nowrap">{{ $promotion->title }}</a>
+                        </td>
+                        <td class="text-center">
+                            {{ $promotion->views}}
                         </td>
                         <td class="text-center">
                             {{ $promotion->start_at ? \Carbon\Carbon::parse($promotion->start_at)->format('d/m/Y') : '-' }}

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->text('tag_ids')->nullable();
+            $table->integer('views')->default('0');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

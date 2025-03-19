@@ -9,7 +9,7 @@ class PromotionController extends Controller
 {
     public function index()
     {
-        return response()->json(PromotionContent::all(), 200);
+        return response()->json(PromotionContent::where('status', 'active')->get(), 200);
     }
 
     public function show($id)
@@ -18,6 +18,7 @@ class PromotionController extends Controller
         if (!$promotion) {
             return response()->json(['message' => 'Not found'], 404);
         }
+        $promotion->increment('views');
         return response()->json($promotion, 200);
     }
 
@@ -46,4 +47,5 @@ class PromotionController extends Controller
         $promotion->delete();
         return response()->json(['message' => 'Deleted successfully'], 200);
     }
+
 }
