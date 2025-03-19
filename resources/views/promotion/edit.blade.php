@@ -12,7 +12,7 @@
 
     <form action="{{ route('admin.promotion.update', $promotion->id) }}" method="POST">
         @csrf
-        @method('PUT') <!-- Hoặc PATCH nếu cần -->
+        @method('PUT')
         <div class="form-group mb-4">
             <input type="text" name="title" class="form-control" placeholder="Tiêu đề ..."
                 value="{{ $promotion->title }}" required>
@@ -20,7 +20,7 @@
         <div class="form-group mb-4">
             <select id="tags" name="tag_titles[]" multiple class="form-control">
                 @php
-                    $selectedTagIds = explode(';', $promotion->tag_ids); // Tách tag_ids thành mảng
+                    $selectedTagIds = explode(';', $promotion->tag_ids);
                 @endphp
                 @if (!empty($tags))
                     @foreach ($tags as $tag)
@@ -33,6 +33,15 @@
             <span class="help-span">Tối đa 5 tag</span>
         </div>
 
+        <!-- Thumbnail -->
+        <div class="form-group mb-4">
+            <label>Ảnh bìa</label>
+            <textarea name="image" id="thumbnailEditor" class="form-control" placeholder="Chọn ảnh bìa">
+                @if (!empty($promotion->image))
+                    <img src="{{ $promotion->image }}" alt="Thumbnail">
+                @endif
+            </textarea>
+        </div>
 
         <div class="form-group mb-4">
             <textarea name="content" id="editor" class="form-control" placeholder="Nội dung bài viết">{{ $promotion->content }}</textarea>
@@ -54,13 +63,10 @@
             <input type="date" name="end_at" id="end_at" class="form-control"
                 value="{{ old('end_at', !empty($promotion->end_at) ? \Carbon\Carbon::parse($promotion->end_at)->format('Y-m-d') : '') }}">
 
-
             @error('end_at')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-
-
 
         <div class="form-group mb-4">
             <label for="status">Trạng thái</label>
@@ -102,6 +108,28 @@
                     });
             } else {
                 console.error("Không tìm thấy #editor để khởi tạo CKEditor.");
+            }
+
+            /** ✅ Khởi tạo CKEditor cho thumbnail */
+            const thumbnailEditor = document.querySelector('#thumbnailEditor');
+            if (thumbnailEditor) {
+                ClassicEditor.create(thumbnailEditor, {
+                    ckfinder: {
+                        uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
+                    },
+                    toolbar: ['imageUpload', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'undo', 'redo'],
+                    removePlugins: ['MediaEmbed', 'Table', 'TableToolbar', 'ImageToolbar', 'ImageResize'],
+                    height: 200,
+                    image: {
+                        toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|', 'imageStyle:inline', 'imageStyle:block', '|', 'imageStyle:remove']
+                    }
+                })
+                .then(editor => {
+                    console.log("CKEditor thumbnail đã khởi tạo thành công", editor);
+                })
+                .catch(error => {
+                    console.error("Lỗi CKEditor thumbnail:", error);
+                });
             }
 
             /** ✅ Kiểm tra tồn tại của phần tử trước khi khởi tạo TomSelect */

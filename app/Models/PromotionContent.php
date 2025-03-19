@@ -10,7 +10,7 @@ class PromotionContent extends Model
 {
     //
     use HasFactory;
-    protected $fillable = ['title', 'content', 'start_at', 'end_at', 'tag_ids', 'status'];
+    protected $fillable = ['title', 'image', 'content', 'start_at', 'end_at', 'tag_ids', 'status'];
 
     // Tự động kiểm tra và cập nhật trạng thái nếu end_at đã qua
     public function getStatusAttribute($value)

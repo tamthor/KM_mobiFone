@@ -7,13 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Http\File;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class FilesController extends Controller
 {
     //
     public function ckeditorUpload(Request $request)
     {
-        
+
         try {
             // dd($request->all());
             // Validate file upload
@@ -114,5 +116,50 @@ class FilesController extends Controller
         }
 
         return $link;
+    }
+    #dropzone
+
+    private function storeFile($file, $folder, $convertToWebP = false, $filename = null)
+    {
+        $awsKey = env('AWS_ACCESS_KEY_ID');
+        $awsSecret = env('AWS_SECRET_ACCESS_KEY');
+        $disk = ($awsKey && $awsSecret) ? 's3' : 'local';
+        $folder = ($disk === 'local') ? "public/$folder" : $folder;
+
+        $filename = $filename ?? Str::random(25);
+        $extension = $convertToWebP ? 'webp' : $file->getClientOriginalExtension();
+        $filePath = "$folder/$filename.$extension";
+
+        if ($convertToWebP) {
+            $tempPath = sys_get_temp_dir() . "/$filename.webp";
+
+            $manager = new ImageManager(new Driver()); // Chạy với GD
+            $image = $manager->read($file)->toWebp(90);
+            $image->save($tempPath);
+
+            Storage::disk($disk)->put($filePath, file_get_contents($tempPath));
+            unlink($tempPath);
+        } else {
+            Storage::disk($disk)->putFileAs($folder, $file, "$filename.$extension");
+        }
+
+        $link = Storage::disk($disk)->url($filePath);
+        return ($disk === 'local') ? asset($link) : $link;
+    }
+
+    public function uploadImage(Request $request, $folder, $convertToWebP = false)
+    {
+        $request->validate(['photo' => 'required|image|max:2048']);
+
+        $file = $request->file('photo');
+        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $link = $this->storeFile($file, $folder, $convertToWebP, $filename);
+
+        return response()->json(['status' => true, 'link' => $link]);
+    }
+
+    public function avatarUpload(Request $request)
+    {
+        return $this->uploadImage($request, 'avatar');
     }
 }

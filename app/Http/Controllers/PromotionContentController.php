@@ -29,6 +29,7 @@ class PromotionContentController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'string|required',
+            'image' => 'nullable|string',
             'start_at' => 'nullable|date|after_or_equal:today',
             'end_at' => 'nullable|date|after:start_at',
             'tag_titles' => 'nullable|array',
@@ -40,8 +41,19 @@ class PromotionContentController extends Controller
             $tag_id = app(TagsController::class)->store($request['tag_titles']);
         }
 
+        // Xử lý ảnh thumbnail từ CKEditor
+        $image = null;
+        if ($request->has('image')) {
+            // Lấy URL ảnh từ nội dung HTML của CKEditor
+            preg_match('/<img[^>]+src="([^">]+)"/', $request->image, $matches);
+            if (isset($matches[1])) {
+                $image = $matches[1];
+            }
+        }
+
         PromotionContent::create([
             'title' => $request->title,
+            'image' => $image,
             'content' => $request->content,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
@@ -65,6 +77,7 @@ class PromotionContentController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'string|required',
+            'image' => 'nullable|string',
             'start_at' => 'nullable|date|after_or_equal:today',
             'end_at' => 'nullable|date|after:start_at',
             'tag_titles' => 'nullable|array',
@@ -78,8 +91,19 @@ class PromotionContentController extends Controller
             $tag_id = app(TagsController::class)->store($request['tag_titles']);
         }
 
+        // Xử lý ảnh thumbnail từ CKEditor
+        $image = $promotion->image; // Giữ ảnh cũ mặc định
+        if (!empty($request->image)) {
+            // Lấy URL ảnh từ nội dung HTML của CKEditor
+            preg_match('/<img[^>]+src="([^">]+)"/', $request->image, $matches);
+            if (isset($matches[1])) {
+                $image = $matches[1];
+            }
+        }
+
         $promotion->update([
             'title' => $request->title,
+            'image' => $image,
             'content' => $request->content,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,

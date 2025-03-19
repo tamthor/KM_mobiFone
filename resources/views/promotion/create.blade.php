@@ -1,17 +1,16 @@
 @extends('layouts.master')
 @section('css')
-    <!-- Tom Select CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 @endsection
 
 @section('content')
-    <div class="back-button">
+    <div class="back-button mt-4">
         <a href="{{ url()->previous() }}" class="btn btn-secondary">
             ← Quay lại
         </a>
     </div>
 
-    <h1 class="mb-4">Thêm bài viết mới</h1>
+    <h1 class="mb-4 mt-4">Thêm bài viết mới</h1>
 
     <form action="{{ route('admin.promotion.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -30,6 +29,12 @@
                 @endif
             </select>
             <span class="help-span">Tối đa 5 tag</span>
+        </div>
+
+        <!-- Thumbnail -->
+        <div class="form-group mb-4">
+            <label>Ảnh bìa</label>
+            <textarea name="image" id="thumbnailEditor" class="form-control" placeholder="Chọn ảnh bìa"></textarea>
         </div>
 
         <!-- Nội dung bài viết -->
@@ -74,33 +79,55 @@
 
 @section('scripts')
     <!-- Tom Select -->
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <!-- CKEditor -->
     <script src="{{ asset('js/js/ckeditor.js') }}"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             /** ✅ Kiểm tra tồn tại của phần tử trước khi khởi tạo CKEditor */
             const editorElement = document.querySelector('#editor');
             if (editorElement) {
                 ClassicEditor.create(editorElement, {
+                        ckfinder: {
+                            uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
+                        },
+                        mediaEmbed: {
+                            previewsInData: true
+                        },
+                        enterMode: 'BR',
+                        filebrowserUploadMethod: 'form',
+                    })
+                    .then(editor => {
+                        console.log("CKEditor đã khởi tạo thành công", editor);
+                    })
+                    .catch(error => {
+                        console.error("Lỗi CKEditor:", error);
+                    });
+            } else {
+                console.error("Không tìm thấy #editor để khởi tạo CKEditor.");
+            }
+
+            /** ✅ Khởi tạo CKEditor cho thumbnail */
+            const thumbnailEditor = document.querySelector('#thumbnailEditor');
+            if (thumbnailEditor) {
+                ClassicEditor.create(thumbnailEditor, {
                     ckfinder: {
                         uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
                     },
-                    mediaEmbed: {
-                        previewsInData: true
-                    },
-                    enterMode: 'BR',
-                    filebrowserUploadMethod: 'form',
+                    toolbar: ['imageUpload', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'undo', 'redo'],
+                    removePlugins: ['MediaEmbed', 'Table', 'TableToolbar', 'ImageToolbar', 'ImageResize'],
+                    height: 200,
+                    image: {
+                        toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|', 'imageStyle:inline', 'imageStyle:block', '|', 'imageStyle:remove']
+                    }
                 })
                 .then(editor => {
-                    console.log("CKEditor đã khởi tạo thành công", editor);
+                    console.log("CKEditor thumbnail đã khởi tạo thành công", editor);
                 })
                 .catch(error => {
-                    console.error("Lỗi CKEditor:", error);
+                    console.error("Lỗi CKEditor thumbnail:", error);
                 });
-            } else {
-                console.error("Không tìm thấy #editor để khởi tạo CKEditor.");
             }
 
             /** ✅ Kiểm tra tồn tại của phần tử trước khi khởi tạo TomSelect */
@@ -125,7 +152,10 @@
                         const tagName = this.getAttribute('data-tag-name');
 
                         if (!tomSelect.options[tagId]) {
-                            tomSelect.addOption({ value: tagId, text: tagName });
+                            tomSelect.addOption({
+                                value: tagId,
+                                text: tagName
+                            });
                         }
                         tomSelect.addItem(tagId);
                     });

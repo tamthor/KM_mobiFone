@@ -16,9 +16,9 @@
             </a>
         </li>
         <li>
-            <a href="side-menu-light-post.html" class="side-menu">
+            <a href="{{ route('admin.contact.index') }}" class="side-menu">
                 <div class="side-menu__icon"> <i data-lucide="file-text"></i> </div>
-                <div class="side-menu__title"> Post# </div>
+                <div class="side-menu__title">Liên hệ</div>
             </a>
         </li>
         <li class="side-nav__devider my-6"></li>

@@ -13,6 +13,9 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('home');
     Route::resource('promotion', PromotionContentController::class);
     Route::post('upload-ckeditor', [FilesController::class, 'ckeditorUpload'])->name('upload.ckeditor');
+    Route::resource('contact', PromotionContactController::class);
+    Route::post('avatar-upload', [FilesController::class, 'avatarUpload'])->name('upload.avatar');
+    
 
 });
 

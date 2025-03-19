@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('promotion_contents', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('image');
             $table->longText('content');
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
