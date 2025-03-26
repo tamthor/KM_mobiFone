@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\PromotionCategoryController;
 use App\Http\Controllers\PromotionContactController;
 use App\Http\Controllers\PromotionContentController;
 
@@ -14,6 +15,7 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
     Route::resource('promotion', PromotionContentController::class);
     Route::post('upload-ckeditor', [FilesController::class, 'ckeditorUpload'])->name('upload.ckeditor');
     Route::resource('contact', PromotionContactController::class);
+    Route::resource('category', PromotionCategoryController::class);
     Route::post('avatar-upload', [FilesController::class, 'avatarUpload'])->name('upload.avatar');
     
 

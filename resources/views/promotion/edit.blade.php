@@ -5,7 +5,7 @@
 @endsection
 @section('content')
     <div class="back-button">
-        <a href="{{ route('admin.promotion.index') }}" class="btn btn-secondary">← Quay lại</a>
+        <a href="{{ route('admin.promotion.index') }}" class="btn btn-secondary mt-3 mb-3">← Quay lại</a>
     </div>
 
     <h1 class="mb-4">Chỉnh sửa khuyến mãi</h1>
@@ -33,13 +33,30 @@
             <span class="help-span">Tối đa 5 tag</span>
         </div>
 
+        <!-- Danh mục -->
+        <div class="form-group mb-4">
+            <label for="category_id" class="form-label">Danh mục</label>
+            <select name="category_id" id="category_id" class="form-control" required>
+                <option value="">Chọn danh mục</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}"
+                        {{ old('category_id', $promotion->category_id) == $category->id ? 'selected' : '' }}>
+                        {{ $category->title }}
+                    </option>
+                @endforeach
+            </select>
+            @error('category_id')
+                <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Thumbnail -->
         <div class="form-group mb-4">
             <label>Ảnh bìa</label>
             <textarea name="image" id="thumbnailEditor" class="form-control" placeholder="Chọn ảnh bìa">
                 @if (!empty($promotion->image))
-                    <img src="{{ $promotion->image }}" alt="Thumbnail">
-                @endif
+<img src="{{ $promotion->image }}" alt="Thumbnail">
+@endif
             </textarea>
         </div>
 
@@ -114,22 +131,27 @@
             const thumbnailEditor = document.querySelector('#thumbnailEditor');
             if (thumbnailEditor) {
                 ClassicEditor.create(thumbnailEditor, {
-                    ckfinder: {
-                        uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
-                    },
-                    toolbar: ['imageUpload', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'undo', 'redo'],
-                    removePlugins: ['MediaEmbed', 'Table', 'TableToolbar', 'ImageToolbar', 'ImageResize'],
-                    height: 200,
-                    image: {
-                        toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|', 'imageStyle:inline', 'imageStyle:block', '|', 'imageStyle:remove']
-                    }
-                })
-                .then(editor => {
-                    console.log("CKEditor thumbnail đã khởi tạo thành công", editor);
-                })
-                .catch(error => {
-                    console.error("Lỗi CKEditor thumbnail:", error);
-                });
+                        ckfinder: {
+                            uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
+                        },
+                        toolbar: ['imageUpload', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+                            '|', 'undo', 'redo'
+                        ],
+                        removePlugins: ['MediaEmbed', 'Table', 'TableToolbar', 'ImageToolbar', 'ImageResize'],
+                        height: 200,
+                        image: {
+                            toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft',
+                                'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side', '|',
+                                'imageStyle:inline', 'imageStyle:block', '|', 'imageStyle:remove'
+                            ]
+                        }
+                    })
+                    .then(editor => {
+                        console.log("CKEditor thumbnail đã khởi tạo thành công", editor);
+                    })
+                    .catch(error => {
+                        console.error("Lỗi CKEditor thumbnail:", error);
+                    });
             }
 
             /** ✅ Kiểm tra tồn tại của phần tử trước khi khởi tạo TomSelect */

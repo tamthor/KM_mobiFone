@@ -1,0 +1,40 @@
+@extends('layouts.master')
+
+@section('content')
+    <div class="back-button mt-4">
+        <a href="{{ url()->previous() }}" class="btn btn-secondary">
+            ← Quay lại
+        </a>
+    </div>
+
+    <h1 class="mb-4 mt-4">Chỉnh sửa danh mục</h1>
+
+    <form action="{{ route('admin.category.update', $category->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
+        <div class="form-group mb-4 mt-4">
+            <input type="text" name="title" class="form-control post-title" placeholder="Tiêu đề ..." value="{{ old('title', $category->title) }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Trạng thái</label>
+            <select name="status" class="form-control">
+                <option value="active" {{ $category->status == 'active' ? 'selected' : '' }}>Kích hoạt</option>
+                <option value="inactive" {{ $category->status == 'inactive' ? 'selected' : '' }}>Tạm dừng</option>
+            </select>
+            @error('status')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="form-actions d-flex justify-content-between align-items-center">
+            <button type="submit" class="btn btn-primary">Cập nhật danh mục</button>
+        </div>
+    </form>
+@endsection
+
+@section('scripts')
+    <script></script>
+@endsection

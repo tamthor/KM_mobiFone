@@ -20,6 +20,8 @@ return new class extends Migration
             $table->timestamp('end_at')->nullable();
             $table->text('tag_ids')->nullable();
             $table->integer('views')->default('0');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('promotion_categories')->onDelete('set null');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });

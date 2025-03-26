@@ -43,6 +43,12 @@
                         <div class="side-menu__title"> Tạo mới </div>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.category.index') }}" class="side-menu">
+                        <div class="side-menu__icon"> <i data-lucide="layers"></i> </div>
+                        <div class="side-menu__title"> Danh mục </div>
+                    </a>
+                </li>
             </ul>
         </li>
     </ul>

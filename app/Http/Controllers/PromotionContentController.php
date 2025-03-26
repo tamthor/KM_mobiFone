@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\promotionCategory;
 use App\Models\PromotionContent;
 use App\Models\Tags;
 use Illuminate\Http\Request;
@@ -12,7 +13,8 @@ class PromotionContentController extends Controller
     public function index()
     {
         $promotions = PromotionContent::orderBy('created_at', 'desc')->paginate(10);
-        return view('promotion.index', compact('promotions'));
+        $categories = PromotionCategory::where('status', 'active')->get();
+        return view('promotion.index', compact('promotions', 'categories'));
     }
 
     public function create()
@@ -22,8 +24,10 @@ class PromotionContentController extends Controller
         //     return redirect()->route('front.login');
         // }
         $tags = Tags::all();
-        return view('promotion.create', compact('tags'));
+        $categories = PromotionCategory::where('status', 'active')->get();
+        return view('promotion.create', compact('tags', 'categories'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -33,6 +37,7 @@ class PromotionContentController extends Controller
             'start_at' => 'nullable|date|after_or_equal:today',
             'end_at' => 'nullable|date|after:start_at',
             'tag_titles' => 'nullable|array',
+            'category_id' => 'nullable|exists:promotion_categories,id',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -58,6 +63,7 @@ class PromotionContentController extends Controller
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'tag_ids' => $tag_id,
+            'category_id' => $request->category_id,
             'status' => $request->status,
         ]);
 
@@ -67,9 +73,10 @@ class PromotionContentController extends Controller
     public function edit($id)
     {
         $promotion = PromotionContent::findOrFail($id);
+        $categories = PromotionCategory::where('status', 'active')->get();
         $tags = Tags::all();
 
-        return view('promotion.edit', compact('promotion', 'tags'));
+        return view('promotion.edit', compact('promotion', 'tags', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -81,6 +88,7 @@ class PromotionContentController extends Controller
             'start_at' => 'nullable|date|after_or_equal:today',
             'end_at' => 'nullable|date|after:start_at',
             'tag_titles' => 'nullable|array',
+            'category_id' => 'nullable|exists:promotion_categories,id',
             'status' => 'required|in:active,inactive',
         ]);
 
@@ -108,6 +116,7 @@ class PromotionContentController extends Controller
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'tag_ids' => $tag_id,
+            'category_id' => $request->category_id,
             'status' => $request->status,
         ]);
 

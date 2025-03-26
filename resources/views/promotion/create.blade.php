@@ -31,6 +31,22 @@
             <span class="help-span">Tối đa 5 tag</span>
         </div>
 
+        <!-- Danh mục -->
+        <div class="form-group mb-4">
+            <label for="category_id" class="form-label">Danh mục</label>
+            <select name="category_id" id="category_id" class="form-control" required>
+                <option value="">Chọn danh mục</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" >
+                        {{ $category->title }}
+                    </option>
+                @endforeach
+            </select>
+            @error('category_id')
+                <div class="text-danger mt-2">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Thumbnail -->
         <div class="form-group mb-4">
             <label>Ảnh bìa</label>
@@ -45,8 +61,8 @@
         <div class="mb-3">
             <label class="form-label">Trạng thái</label>
             <select name="status" class="form-control">
-                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Kích hoạt</option>
-                <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Tạm dừng</option>
+                <option value="active" >Kích hoạt</option>
+                <option value="inactive" >Tạm dừng</option>
             </select>
             @error('status')
                 <div class="text-danger">{{ $message }}</div>
@@ -55,7 +71,7 @@
 
         <div class="mb-3">
             <label for="start_at" class="form-label">Ngày bắt đầu</label>
-            <input type="date" name="start_at" id="start_at" class="form-control" value="{{ old('start_at') }}">
+            <input type="date" name="start_at" id="start_at" class="form-control" >
             @error('start_at')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -64,7 +80,7 @@
         {{-- Ngày kết thúc --}}
         <div class="mb-3">
             <label for="end_at" class="form-label">Ngày kết thúc</label>
-            <input type="date" name="end_at" id="end_at" class="form-control" value="{{ old('end_at') }}">
+            <input type="date" name="end_at" id="end_at" class="form-control">
             @error('end_at')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
