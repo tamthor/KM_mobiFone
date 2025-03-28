@@ -1,15 +1,29 @@
 <?php
-namespace App\Http\Controllers\Api; // Cập nhật namespace
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; // Import Controller gốc
+use App\Http\Controllers\Controller;
 use App\Models\PromotionContent;
+use App\Models\PromotionCategory;
 
 class PromotionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(PromotionContent::where('status', 'active')->get(), 200);
+        $query = PromotionContent::where('status', 'active');
+
+        // Lọc theo category_id nếu có
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        // Tìm kiếm theo từ khóa nếu có
+        if ($request->has('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->where('title', 'LIKE', "%{$keyword}%"); // Tìm kiếm trong title
+        }
+
+        return response()->json($query->get(), 200);
     }
 
     public function show($id)
@@ -48,4 +62,8 @@ class PromotionController extends Controller
         return response()->json(['message' => 'Deleted successfully'], 200);
     }
 
+    public function getCategories()
+    {
+        return response()->json(PromotionCategory::where('status', 'active')->get(), 200);
+    }
 }

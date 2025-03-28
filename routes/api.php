@@ -28,6 +28,7 @@ Route::prefix('promotions')->group(function () {
     Route::post('/', [PromotionController::class, 'store']);
     Route::put('/{id}', [PromotionController::class, 'update']);
     Route::delete('/{id}', [PromotionController::class, 'destroy']);
+    Route::get('/promotion-categories', [PromotionController::class, 'getCategories']);
 });
 
 Route::post('/promotion_contact', [PromotionContactController::class, 'store'])->name('promotion.contact');
