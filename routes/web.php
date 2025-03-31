@@ -6,6 +6,7 @@ use App\Http\Controllers\FilesController;
 use App\Http\Controllers\PromotionCategoryController;
 use App\Http\Controllers\PromotionContactController;
 use App\Http\Controllers\PromotionContentController;
+use App\Http\Controllers\BannerController;
 
 // Route::get('/', function () {
 //     return view('index');
@@ -17,7 +18,11 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
     Route::resource('contact', PromotionContactController::class);
     Route::resource('category', PromotionCategoryController::class);
     Route::post('avatar-upload', [FilesController::class, 'avatarUpload'])->name('upload.avatar');
+    Route::resource('banners', BannerController::class);
     
 
 });
+
+
+
 

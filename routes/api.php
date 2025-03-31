@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BannerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PromotionContactController;
@@ -32,5 +33,6 @@ Route::prefix('promotions')->group(function () {
 });
 
 Route::post('/promotion_contact', [PromotionContactController::class, 'store'])->name('promotion.contact');
+Route::get('/banners', [BannerController::class, 'index']);
 
 // Nếu cần thêm API khác, bạn có thể tiếp tục viết ở đây
