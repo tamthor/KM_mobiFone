@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('promotion_content_id');
             $table->string('full_name');
-            $table->string('email')->unique();
-            $table->string('phone_number')->unique();
+            $table->string('email');
+            $table->string('phone_number');
             $table->string('city');
             $table->text('note')->nullable();
             $table->timestamps();

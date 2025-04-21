@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PromotionContact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PromotionContactController extends Controller
 {
@@ -16,7 +17,7 @@ class PromotionContactController extends Controller
     //     return view('contact.index', compact('contacts'));
     // }
     public function index() {
-        $contacts = \DB::table('promotion_contacts')
+        $contacts = DB::table('promotion_contacts')
             ->join('promotion_contents', 'promotion_contacts.promotion_content_id', '=', 'promotion_contents.id')
             ->select('promotion_contacts.*', 'promotion_contents.title as promotion_title')
             ->orderBy('promotion_contacts.created_at', 'desc') // Sắp xếp trước khi lấy dữ liệu
