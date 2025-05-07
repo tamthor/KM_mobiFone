@@ -15,7 +15,7 @@ class Comment extends Model
 
     public function replies()
     {
-        return $this->hasMany(Comment::class, 'parent_id')->where('status', 'approved')->orderBy('created_at', 'asc');
+        return $this->hasMany(Comment::class, 'parent_id')->orderBy('created_at', 'asc');
     }
 
     public function parent()

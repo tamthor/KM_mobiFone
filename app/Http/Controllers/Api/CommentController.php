@@ -11,19 +11,20 @@ class CommentController extends Controller
 {
     // Lấy danh sách bình luận của một khuyến mãi
     public function index($promotionId)
-    {
-        $comments = Comment::where('promotion_id', $promotionId)
-            // ->where('status', 'approved')
-            ->whereNull('parent_id') // Chỉ lấy bình luận gốc
-            ->with(['replies']) // Lấy các bình luận trả lời
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        return response()->json([
-            'status' => 'success',
-            'data' => $comments,
-        ], 200);
-    }
+{
+    $comments = Comment::where('promotion_id', $promotionId)
+        ->whereNull('parent_id') // Chỉ lấy bình luận gốc
+        ->with('replies.replies') // Tải đến cấp 2
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // \Log::info('Comments fetched:', $comments->toArray());
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $comments,
+    ], 200);
+}
 
     // Thêm bình luận mới
    public function store(Request $request)
