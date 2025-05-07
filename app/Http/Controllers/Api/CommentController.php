@@ -14,9 +14,11 @@ class CommentController extends Controller
     {
         $comments = Comment::where('promotion_id', $promotionId)
             // ->where('status', 'approved')
+            ->whereNull('parent_id') // Chỉ lấy bình luận gốc
+            ->with(['replies']) // Lấy các bình luận trả lời
             ->orderBy('created_at', 'desc')
             ->get();
-
+    
         return response()->json([
             'status' => 'success',
             'data' => $comments,
@@ -24,33 +26,35 @@ class CommentController extends Controller
     }
 
     // Thêm bình luận mới
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'promotion_id' => 'required|exists:promotion_contents,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'content' => 'required|string|max:1000',
-        ]);
+   public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'promotion_id' => 'required|exists:promotion_contents,id',
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'content' => 'required|string|max:1000',
+        'parent_id' => 'nullable|exists:comments,id', // Thêm parent_id để trả lời bình luận
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $validator->errors()->first(),
-            ], 400);
-        }
-
-        $comment = Comment::create([
-            'promotion_id' => $request->promotion_id,
-            'name' => $request->name,
-            'email' => $request->email,
-            'content' => $request->content,
-        ]);
-
+    if ($validator->fails()) {
         return response()->json([
-            'status' => 'success',
-            'message' => 'Bình luận đã được gửi và đang chờ duyệt.',
-            'data' => $comment,
-        ], 201);
+            'status' => 'error',
+            'message' => $validator->errors()->first(),
+        ], 400);
     }
+
+    $comment = Comment::create([
+        'promotion_id' => $request->promotion_id,
+        'name' => $request->name,
+        'email' => $request->email,
+        'content' => $request->content,
+        'parent_id' => $request->parent_id, // Lưu parent_id nếu có
+    ]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Bình luận đã được gửi và đang chờ duyệt.',
+        'data' => $comment,
+    ], 201);
+}
 }
