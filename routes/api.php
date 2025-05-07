@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PromotionContactController;
 use App\Http\Controllers\Api\PromotionController; // Cập nhật namespace
+use App\Http\Controllers\Api\CommentController; // Cập nhật namespace
 
 /*
 |--------------------------------------------------------------------------
@@ -29,10 +30,12 @@ Route::prefix('promotions')->group(function () {
     Route::post('/', [PromotionController::class, 'store']);
     Route::put('/{id}', [PromotionController::class, 'update']);
     Route::delete('/{id}', [PromotionController::class, 'destroy']);
-    Route::get('/promotion-categories', [PromotionController::class, 'getCategories']);
 });
-
+Route::get('/promotion-categories', [PromotionController::class, 'getCategories']);
+Route::get('/promotion-categories/{id}', [PromotionController::class, 'promotionbycategory']);
 Route::post('/promotion_contact', [PromotionContactController::class, 'store'])->name('promotion.contact');
 Route::get('/banners', [BannerController::class, 'index']);
+Route::get('/comments/{promotion_id}', [CommentController::class, 'index']);
+Route::post('/comments', [CommentController::class, 'store']);
 
 // Nếu cần thêm API khác, bạn có thể tiếp tục viết ở đây

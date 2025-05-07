@@ -66,4 +66,13 @@ class PromotionController extends Controller
     {
         return response()->json(PromotionCategory::where('status', 'active')->get(), 200);
     }
+
+    public function promotionbycategory($id)
+    {
+        $category = PromotionCategory::find($id);
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+        return response()->json($category, 200);
+    }
 }
